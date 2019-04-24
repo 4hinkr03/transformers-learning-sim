@@ -72,4 +72,8 @@ public class Location {
     public void setY(int y) {
         this.y = y;
     }
+
+    public boolean matches(Location location) {
+        return this.x == location.x && this.y == location.y;
+    }
 }
