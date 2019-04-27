@@ -54,6 +54,7 @@ public class TransformerSim extends Simulator {
         TransformerConfig.resetRandom();
         bot.reset();
         gui.setStep(0);
+        decepticons.forEach(decepticon -> planet.setAgent(null, decepticon.getLocation()));
         decepticons.clear();
         populate();
     }

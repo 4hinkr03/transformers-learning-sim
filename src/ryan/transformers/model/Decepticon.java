@@ -28,8 +28,7 @@ public class Decepticon extends Agent {
     }
 
     private void move(Planet planet, Location moveLocation) {
-    	System.out.println("movelocation=" + moveLocation);
-        if (moveLocation != null) {
+    	if (moveLocation != null) {
             planet.setAgent(null, this.location);
             this.location = moveLocation;
             planet.setAgent(this, this.location);
