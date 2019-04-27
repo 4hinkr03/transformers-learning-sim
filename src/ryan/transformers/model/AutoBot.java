@@ -7,6 +7,7 @@ import ryan.transformers.TransformerSim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ryan
@@ -41,10 +42,8 @@ public class AutoBot extends Agent {
 			move(planet, path.get(locationIndex + 1));
 		} else {
 			//move to a random location
-			move(planet, planet.getAdjacentLocation(location));
+			move(planet, nextLocation(planet));
 		}
-		setAlive(isLocationFree(planet, location));
-		
 	}
 	
 	private void move(Planet planet, Location nextLocation) {
@@ -73,7 +72,7 @@ public class AutoBot extends Agent {
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 		if (!alive) {
-			System.out.println("Path[" + path.size() + "] before death");
+			System.out.println("Path[" + path.size() + "] before death " + path.get(path.size() - 1));
 			flagLocation(location);
 			path.remove(location);
 		}
@@ -104,5 +103,10 @@ public class AutoBot extends Agent {
 		return !path.isEmpty() && path.get(path.size() - 1).matches(TransformerConfig.ALL_SPARK_LOCATION);
 	}
 	
+	private Location nextLocation(Planet planet) {
+		List<Location> locations = planet.getAdjacentLocations(location);
+		locations = locations.stream().filter(loc -> !isFlaggedLocation(loc)).collect(Collectors.toList());
+		return locations.get(Planet.randomInt(0, locations.size()-1));
+	}
 	
 }
