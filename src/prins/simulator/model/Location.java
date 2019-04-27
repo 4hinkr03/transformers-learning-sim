@@ -76,4 +76,9 @@ public class Location {
     public boolean matches(Location location) {
         return this.x == location.x && this.y == location.y;
     }
+    
+    @Override
+    public String toString() {
+    	return "[x=" + x + ", y=" + y + "]";
+    }
 }

@@ -62,7 +62,6 @@ public class TransformerSim extends Simulator {
     		bot.act(planet);
     	} else {
     		//bot isn't alive and sim needs to restart
-    		System.out.println("reset");
     		reset();
     	}
     	

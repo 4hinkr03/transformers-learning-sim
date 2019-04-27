@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 public class Planet extends Environment {
 
     private Agent[][] planet;
-
+    
     public Planet() {
-        clear();
+    	clear();
     }
 
     @Override
@@ -49,12 +49,8 @@ public class Planet extends Environment {
         Random random = TransformerConfig.RANDOM;
         return random.nextInt((max - min) + 1) + min;
     }
-
-    public boolean isLocationFree(Location location) {
-    	return !locationMatches(location, Block.class) && !locationMatches(location, Decepticon.class);
-    }
     
-    private boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
+    public boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
         Agent agent = getAgent(location);
         return agent != null && agent.getClass() == matchClass;
     }
@@ -88,7 +84,7 @@ public class Planet extends Environment {
         return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
 
-    private List<Location> getAdjacentLocations(Location location) {
+    public List<Location> getAdjacentLocations(Location location) {
         List<Location> adjacentLocations = new ArrayList<>();
         int currentX = location.getX();
         int currentY = location.getY();
@@ -100,7 +96,7 @@ public class Planet extends Environment {
                 Location adjacentLocation = new Location(x, y);
                 if (withinBounds(x, y)) {
                     if (!location.matches(adjacentLocation)) {
-                        adjacentLocations.add(adjacentLocation);
+                    	adjacentLocations.add(adjacentLocation);
                     }
                 }
             }
