@@ -50,14 +50,18 @@ public class Planet extends Environment {
         return random.nextInt((max - min) + 1) + min;
     }
 
-    public boolean isLocationMatches(Location location, Class matchClass) {
+    public boolean isLocationFree(Location location) {
+    	return !locationMatches(location, Block.class) && !locationMatches(location, Decepticon.class);
+    }
+    
+    private boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
         Agent agent = getAgent(location);
         return agent != null && agent.getClass() == matchClass;
     }
 
-    public Optional<Location> getAdjacentLocationMatches(Location location, Class matchClass) {
+    public Optional<Location> getAdjacentLocationMatches(Location location, Class<? extends Agent> matchClass) {
         Stream<Location> stream = getAdjacentLocations(location).stream();
-        return stream.filter(loc -> isLocationMatches(loc, matchClass)).findAny();
+        return stream.filter(loc -> locationMatches(loc, matchClass)).findAny();
     }
 
     public Location getAdjacentLocation(Location location) {
@@ -80,7 +84,7 @@ public class Planet extends Environment {
         }
     }
 
-    public boolean withinBounds(int x, int y) {
+    private boolean withinBounds(int x, int y) {
         return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
 
@@ -96,10 +100,7 @@ public class Planet extends Environment {
                 Location adjacentLocation = new Location(x, y);
                 if (withinBounds(x, y)) {
                     if (!location.matches(adjacentLocation)) {
-                        if (!isLocationMatches(adjacentLocation, Block.class)) {
-                            adjacentLocations.add(adjacentLocation);
-                        }
-
+                        adjacentLocations.add(adjacentLocation);
                     }
                 }
             }

@@ -12,11 +12,22 @@ public class TransformerConfig {
 
      public static Random RANDOM = new Random(RANDOM_SEED);
 
-    public static final Location AUTOBOT_START_LOCATION = new Location(4, 15);
-    public static final Location ALL_SPARK_LOCATION = new Location(24, 12);
+    public static final Location AUTOBOT_START_LOCATION = new Location(2, 2);
+    public static final Location ALL_SPARK_LOCATION = new Location(20, 15);
 
     public static final BlockArea[] BLOCK_AREAS = {
             new BlockArea(15, 12, 1, 7),
+            
+            new BlockArea(5, 0, 25, 8),
+            new BlockArea(2, 5, 3, 2),
+            new BlockArea(5, 8, 4, 6),
+            new BlockArea(9, 11, 3, 3),
+            new BlockArea(0, 11, 2, 3),
+            new BlockArea(0, 17, 16, 13),
+            new BlockArea(16, 20, 5, 10),
+            new BlockArea(15, 11, 11, 1),
+            new BlockArea(25, 12, 1, 10),
+            
     };
 
     public static void resetRandom() {

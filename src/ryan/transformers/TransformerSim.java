@@ -47,15 +47,25 @@ public class TransformerSim extends Simulator {
     @Override
     protected void reset() {
         planet.clear();
+        planet.clearWorld();
         TransformerConfig.resetRandom();
         populate();
+        bot.reset();
+        gui.setStep(0);
     }
 
     @Override
     protected void update() {
 
         //handle iterations for autobot learning
-    	 bot.act(planet);
+    	if (bot.isAlive()) {
+    		bot.act(planet);
+    	} else {
+    		//bot isn't alive and sim needs to restart
+    		System.out.println("reset");
+    		reset();
+    	}
+    	
 
         //set allSpark location - ensure it remains on the sim
         planet.setAgent(allSpark, allSpark.getLocation());
@@ -78,13 +88,6 @@ public class TransformerSim extends Simulator {
 
         //populate blocks
         populateObstacleCourse();
-    }
-
-    /**
-     * Clears down the bots list and planet so the simulation can repeat
-     */
-    private void clear() {
-        planet.clearWorld();
     }
 
     private void populateObstacleCourse() {

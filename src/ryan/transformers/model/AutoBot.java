@@ -12,7 +12,8 @@ import java.util.List;
 public class AutoBot extends Agent {
 
 	private final List<Location> path;
-
+	private boolean alive;
+	
 	/**
 	 * @param location initial AutoBot location.
 	 */
@@ -28,7 +29,6 @@ public class AutoBot extends Agent {
 	 * @param planet - AutoBot environment
 	 */
 	public void act(Planet planet) {
-		System.out.println("pathsize=" + path.size());
 		int locationIndex = path.indexOf(location);
 		if (locationIndex < path.size() - 1) {
 			//move normally
@@ -39,10 +39,40 @@ public class AutoBot extends Agent {
 		}
 	}
 	
-	private void move(Planet planet, Location nextLocation) {
-		planet.setAgent(null, location);
-		location = nextLocation;
-		path.add(location);
-		planet.setAgent(this, location);
+	private boolean move(Planet planet, Location nextLocation) {
+		if(planet.isLocationFree(nextLocation)) {
+			planet.setAgent(null, location);
+			location = nextLocation;
+			if(!path.contains(location)) {
+				path.add(location);
+			}
+			planet.setAgent(this, location);
+			return true;
+		} else {
+			setAlive(false);
+			//flag location somehow.....
+			return false;
+		}
 	}
+
+	/**
+	 * @return the alive
+	 */
+	public boolean isAlive() {
+		return alive;
+	}
+
+	/**
+	 * @param alive the alive to set
+	 */
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	public void reset() {
+		location = path.get(0);
+		setAlive(true);
+	}
+	
+	
 }
