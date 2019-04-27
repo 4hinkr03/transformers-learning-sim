@@ -49,11 +49,11 @@ public class TransformerSim extends Simulator {
 
     @Override
     protected void reset() {
-        planet.clear();
+    	planet.clear();
         planet.clearWorld();
         TransformerConfig.resetRandom();
         bot.reset();
-        gui.setStep(0);
+        step = 0;
         decepticons.forEach(decepticon -> planet.setAgent(null, decepticon.getLocation()));
         decepticons.clear();
         populate();
@@ -63,21 +63,27 @@ public class TransformerSim extends Simulator {
     protected void update() {
 
         //handle iterations for autobot learning
-    	if (bot.isAlive()) {
+    	if (!bot.hasReachedAllSpark() && bot.isAlive()) {
     		bot.act(planet);
+    		
+    		//decepticons act
+        	decepticons.forEach(decepticon -> decepticon.act(planet));
+
+            //set allSpark location - ensure it remains on the sim
+            planet.setAgent(allSpark, allSpark.getLocation());
+
+            //set blocks locations - so they are displayed on the sim
+            blocks.forEach(block -> planet.setAgent(block, block.getLocation()));
+    		
     	} else {
     		//bot isn't alive and sim needs to restart
+    		if(bot.hasReachedAllSpark()) {
+    			System.out.println("All Spark reached!!");
+    		}
     		reset();
     	}
     	
-    	//decepticons act
-    	decepticons.forEach(decepticon -> decepticon.act(planet));
-
-        //set allSpark location - ensure it remains on the sim
-        planet.setAgent(allSpark, allSpark.getLocation());
-
-        //set blocks locations - so they are displayed on the sim
-        blocks.forEach(block -> planet.setAgent(block, block.getLocation()));
+    	
     }
 
     /**

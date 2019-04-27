@@ -2,6 +2,9 @@ package ryan.transformers.model;
 
 import prins.simulator.model.Agent;
 import prins.simulator.model.Location;
+import ryan.transformers.TransformerConfig;
+import ryan.transformers.TransformerSim;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,11 +81,12 @@ public class AutoBot extends Agent {
 	
 	public void reset() {
 		location = path.get(0);
+		path.clear();
 		setAlive(true);
 	}
 	
 	private boolean isLocationFree(Planet planet, Location location) {
-    	return !planet.locationMatches(location, Block.class) && !planet.locationMatches(location, Decepticon.class);
+    	return !planet.locationMatches(location, Block.class);
     }
 	
 	private void flagLocation(Location location) {
@@ -95,6 +99,10 @@ public class AutoBot extends Agent {
 	 private boolean isFlaggedLocation(Location location) {
 	    	return flaggedLocations.stream().anyMatch(loc -> loc.matches(location));
 	    }
+
+	public boolean hasReachedAllSpark() {
+		return !path.isEmpty() && path.get(path.size() - 1).matches(TransformerConfig.ALL_SPARK_LOCATION);
+	}
 	
 	
 }
