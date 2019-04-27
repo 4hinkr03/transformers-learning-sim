@@ -7,9 +7,12 @@ import prins.simulator.model.Location;
 import ryan.transformers.TransformerConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Planet extends Environment {
@@ -61,12 +64,19 @@ public class Planet extends Environment {
     }
 
     public Location getAdjacentLocation(Location location) {
-        List<Location> locations = getAdjacentLocations(location);
-        if(!locations.isEmpty()) {
-            return locations.get(randomInt(0, locations.size()-1));
-        }
+        return getAdjacentLocation(location, null);
+    }
+    
+    public Location getAdjacentLocation(Location location, Class<? extends Agent> classIgnore) {
+    	 List<Location> locations = getAdjacentLocations(location);
+    	 if(classIgnore != null) {
+    		 locations = locations.stream().filter(loc -> !locationMatches(loc, classIgnore)).collect(Collectors.toList());
+    	 }
+         if(!locations.isEmpty()) {
+             return locations.get(randomInt(0, locations.size()-1));
+         }
 
-        return null;
+         return null;
     }
 
     public void clearWorld() {

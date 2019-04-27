@@ -14,7 +14,12 @@ public class TransformerConfig {
 
     public static final Location AUTOBOT_START_LOCATION = new Location(5, 15);
     public static final Location ALL_SPARK_LOCATION = new Location(24, 12);
-
+    public static final Location[] DECEPTICON_LOCATIONS = {
+    	new Location(15,  7),
+    	new Location(19, 15),
+    	new Location(17, 24)
+    };
+    
     public static final BlockArea[] BLOCK_AREAS = {
             
     		new BlockArea(15, 12, 1, 7),
@@ -23,11 +28,7 @@ public class TransformerConfig {
     		new BlockArea(24, 21, 1, 7),
     		new BlockArea(18, 5, 7, 1),
     		 
-            
-            
-            
-            
-            /*new BlockArea(5, 0, 25, 8),
+           /*new BlockArea(5, 0, 25, 8),
             new BlockArea(2, 5, 3, 2),
             new BlockArea(5, 8, 4, 6),
             new BlockArea(9, 11, 3, 3),

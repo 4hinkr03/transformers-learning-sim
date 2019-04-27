@@ -7,11 +7,8 @@ import java.util.Optional;
 
 public class Decepticon extends Agent {
 
-    private final Location firstLocation;
-
     public Decepticon(Location location) {
         super(location);
-        this.firstLocation = location;
     }
 
     public void act(Planet planet) {
@@ -19,24 +16,23 @@ public class Decepticon extends Agent {
         if (neighbour.isPresent()) {
             attack(planet, neighbour.get());
         } else {
-            move(planet, planet.getAdjacentLocation(location));
+        	move(planet, planet.getAdjacentLocation(location, Block.class));
         }
     }
 
     private void attack(Planet planet, Location location) {
         AutoBot bot = (AutoBot) planet.getAgent(location);
+        System.out.println("Attacked AutoBot");
+        bot.setAlive(false);
         move(planet, location);
     }
 
     private void move(Planet planet, Location moveLocation) {
-        if(moveLocation != null) {
+    	System.out.println("movelocation=" + moveLocation);
+        if (moveLocation != null) {
             planet.setAgent(null, this.location);
             this.location = moveLocation;
             planet.setAgent(this, this.location);
         }
-    }
-
-    public Location getFirstLocation() {
-        return firstLocation;
     }
 }

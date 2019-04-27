@@ -18,6 +18,7 @@ public class TransformerSim extends Simulator {
     private List<Block> blocks;
     private AutoBot bot;
     private AllSpark allSpark;
+    private List<Decepticon> decepticons;
 
     public TransformerSim() {
         this.planet = new Planet();
@@ -25,10 +26,12 @@ public class TransformerSim extends Simulator {
         this.blocks = new ArrayList<>();
         this.bot = new AutoBot(AUTOBOT_START_LOCATION);
         this.allSpark = new AllSpark(ALL_SPARK_LOCATION);
+        this.decepticons = new ArrayList<>();
 
         gui.registerAgentColors(AutoBot.class, Color.GREEN);
         gui.registerAgentColors(AllSpark.class, Color.RED);
         gui.registerAgentColors(Block.class, Color.BLACK);
+        gui.registerAgentColors(Decepticon.class, Color.ORANGE);
 
         populate();
     }
@@ -49,9 +52,10 @@ public class TransformerSim extends Simulator {
         planet.clear();
         planet.clearWorld();
         TransformerConfig.resetRandom();
-        populate();
         bot.reset();
         gui.setStep(0);
+        decepticons.clear();
+        populate();
     }
 
     @Override
@@ -65,6 +69,8 @@ public class TransformerSim extends Simulator {
     		reset();
     	}
     	
+    	//decepticons act
+    	decepticons.forEach(decepticon -> decepticon.act(planet));
 
         //set allSpark location - ensure it remains on the sim
         planet.setAgent(allSpark, allSpark.getLocation());
@@ -85,13 +91,19 @@ public class TransformerSim extends Simulator {
         //populate all spark
         planet.setAgent(allSpark, allSpark.getLocation());
 
+        //populate decepticons
+        for(Location deceptionLoc : DECEPTICON_LOCATIONS) {
+        	decepticons.add(new Decepticon(deceptionLoc));
+        }
+        decepticons.forEach(decepticon -> planet.setAgent(decepticon, decepticon.getLocation()));
+        
+        
         //populate blocks
-        populateObstacleCourse();
-    }
-
-    private void populateObstacleCourse() {
         for(BlockArea area : BLOCK_AREAS) {
             blocks.addAll(area.getArea());
         }
+        blocks.forEach(block -> planet.setAgent(block, block.getLocation()));
     }
+
+
 }
