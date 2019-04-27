@@ -55,7 +55,7 @@ public class TransformerSim extends Simulator {
     protected void update() {
 
         //handle iterations for autobot learning
-
+    	 bot.act(planet);
 
         //set allSpark location - ensure it remains on the sim
         planet.setAgent(allSpark, allSpark.getLocation());
