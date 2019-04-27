@@ -32,16 +32,17 @@ public class AutoBot extends Agent {
 		int locationIndex = path.indexOf(location);
 		if (locationIndex < path.size() - 1) {
 			//move normally
-			planet.setAgent(null, location);
-			location = path.get(locationIndex + 1);
-			path.add(location);
-			planet.setAgent(this, location);
+			move(planet, path.get(locationIndex + 1));
 		} else {
 			//move to a random location
-			planet.setAgent(null, location);
-			location = planet.getAdjacentLocation(location);
-			path.add(location);
-			planet.setAgent(this, location);
+			move(planet, planet.getAdjacentLocation(location));
 		}
+	}
+	
+	private void move(Planet planet, Location nextLocation) {
+		planet.setAgent(null, location);
+		location = nextLocation;
+		path.add(location);
+		planet.setAgent(this, location);
 	}
 }
