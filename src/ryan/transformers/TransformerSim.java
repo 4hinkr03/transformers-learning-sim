@@ -64,6 +64,9 @@ public class TransformerSim extends Simulator {
 
         //handle iterations for autobot learning
     	if (!bot.hasReachedAllSpark() && bot.isAlive()) {
+    	    if(step == 1) {
+                System.out.println("starting path size=" + bot.getPathSize());
+            }
     		bot.act(planet);
     		
     		//decepticons act
@@ -78,7 +81,8 @@ public class TransformerSim extends Simulator {
     	} else {
     		//bot isn't alive and sim needs to restart
     		if(bot.hasReachedAllSpark()) {
-    			System.out.println("All Spark reached!!");
+    			System.out.println("All Spark reached [" + bot.getPathSize() + "]");
+    			bot.optimisePath(planet);
     		}
     		reset();
     	}

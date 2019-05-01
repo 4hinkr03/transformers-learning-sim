@@ -16,7 +16,7 @@ public class Decepticon extends Agent {
         if (neighbour.isPresent()) {
             attack(planet, neighbour.get());
         } else {
-        	move(planet, planet.getAdjacentLocation(location, Block.class));
+        	move(planet, planet.getAdjacentLocation(this.getClass(), location, Block.class));
         }
     }
 

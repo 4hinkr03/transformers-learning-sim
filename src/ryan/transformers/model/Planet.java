@@ -47,11 +47,6 @@ public class Planet extends Environment {
     public void setAgent(Agent agent, Location location) {
         planet[location.getY()][location.getX()] = agent;
     }
-
-    public static int randomInt(int min, int max) {
-        Random random = TransformerConfig.RANDOM;
-        return random.nextInt((max - min) + 1) + min;
-    }
     
     public boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
         Agent agent = getAgent(location);
@@ -67,16 +62,20 @@ public class Planet extends Environment {
         return getAdjacentLocation(location, null);
     }
     
-    public Location getAdjacentLocation(Location location, Class<? extends Agent> classIgnore) {
+    public Location getAdjacentLocation(Class agent, Location location, Class<? extends Agent> classIgnore) {
     	 List<Location> locations = getAdjacentLocations(location);
     	 if(classIgnore != null) {
     		 locations = locations.stream().filter(loc -> !locationMatches(loc, classIgnore)).collect(Collectors.toList());
     	 }
          if(!locations.isEmpty()) {
-             return locations.get(randomInt(0, locations.size()-1));
+             return locations.get(TransformerConfig.randomInt(agent, 0, locations.size() - 1));
          }
 
          return null;
+    }
+
+    public Location getAdjacentLocation(Location location, Class<? extends Agent> classIgnore) {
+        return getAdjacentLocation(null, location, classIgnore);
     }
 
     public void clearWorld() {

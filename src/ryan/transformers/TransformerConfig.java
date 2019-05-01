@@ -3,6 +3,7 @@ package ryan.transformers;
 import prins.simulator.Config;
 import prins.simulator.model.Location;
 import ryan.transformers.model.BlockArea;
+import ryan.transformers.model.Decepticon;
 
 import java.util.Random;
 
@@ -11,6 +12,7 @@ public class TransformerConfig {
     private static final int RANDOM_SEED = 28;
 
      public static Random RANDOM = new Random(RANDOM_SEED);
+     public static Random RANDOM_DECEPTICON = new Random(RANDOM_SEED);
 
     public static final Location AUTOBOT_START_LOCATION = new Location(5, 15);
     public static final Location ALL_SPARK_LOCATION = new Location(24, 12);
@@ -42,6 +44,15 @@ public class TransformerConfig {
 
     public static void resetRandom() {
         RANDOM = new Random(RANDOM_SEED);
+        RANDOM_DECEPTICON = new Random(RANDOM_SEED);
+    }
+
+    public static int randomInt(Class agent, int min, int max) {
+        Random random = RANDOM;
+        if(agent == Decepticon.class) {
+            random = RANDOM_DECEPTICON;
+        }
+        return random.nextInt(max - min + 1) + min;
     }
 
     static {

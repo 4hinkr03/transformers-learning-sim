@@ -39,7 +39,7 @@ public class AutoBot extends Agent {
 		int locationIndex = path.indexOf(location);
 		if (locationIndex < path.size() - 1) {
 			//move normally
-			move(planet, path.get(locationIndex + 1));
+            move(planet, path.get(locationIndex + 1));
 		} else {
 			//move to a random location
             Location nextLocation = nextLocation(planet);
@@ -87,7 +87,6 @@ public class AutoBot extends Agent {
 	
 	public void reset() {
 		location = path.get(0);
-		path.clear();
 		setAlive(true);
 	}
 	
@@ -107,16 +106,57 @@ public class AutoBot extends Agent {
 	    }
 
 	public boolean hasReachedAllSpark() {
-		return !path.isEmpty() && path.get(path.size() - 1).matches(TransformerConfig.ALL_SPARK_LOCATION);
+		return !path.isEmpty() && location.matches(TransformerConfig.ALL_SPARK_LOCATION);
 	}
 	
 	private Location nextLocation(Planet planet) {
 		List<Location> locations = planet.getAdjacentLocations(location);
 		locations = locations.stream().filter(loc -> !isFlaggedLocation(loc)).collect(Collectors.toList());
 		if(!locations.isEmpty()) {
-            return locations.get(Planet.randomInt(0, locations.size()-1));
+            return locations.get(TransformerConfig.randomInt(null, 0, locations.size()-1));
         }
 		return null;
 	}
+
+	public int getPathSize() {
+        return path.size();
+    }
+
+    public void optimisePath(Planet planet) {
+        System.out.println("Optimising Path [" + getPathSize() + "]");
+
+        int currentIndex = 0;
+        int nextIndex = 0;
+        int difference = 1;
+        for (Location location : path) {
+            List<Location> neighbours = planet.getAdjacentLocations(location);
+
+            for (Location nextLocation : path) {
+                for (Location neighbour : neighbours) {
+                    if (nextLocation.matches(neighbour)) {
+                        int currentIndexTemp = path.indexOf(location);
+                        int nextIndexTemp = path.indexOf(nextLocation);
+                        int differenceTemp = nextIndexTemp - currentIndexTemp;
+                        if (differenceTemp > difference) {
+                            currentIndex = currentIndexTemp;
+                            nextIndex = nextIndexTemp;
+                            difference = differenceTemp;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (difference > 1) {
+            System.out.println("optimisation found");
+            System.out.println("From [" + currentIndex + "] => [" + nextIndex + "]");
+            for(int i = nextIndex - 1; i > currentIndex; i--) {
+                //System.out.println("Remove [" + i + "] from path");
+                path.remove(i);
+            }
+        }
+
+        System.out.println("Optimised Path [" + getPathSize() + "]");
+    }
 	
 }
