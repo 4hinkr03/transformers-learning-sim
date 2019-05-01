@@ -42,7 +42,14 @@ public class AutoBot extends Agent {
 			move(planet, path.get(locationIndex + 1));
 		} else {
 			//move to a random location
-			move(planet, nextLocation(planet));
+            Location nextLocation = nextLocation(planet);
+            if(nextLocation != null) {
+                move(planet, nextLocation);
+            } else {
+                //next location doesn't exist, flag this location
+                System.out.println("No potential neighbours, flagged current location");
+                setAlive(false);
+            }
 		}
 	}
 	
@@ -106,7 +113,10 @@ public class AutoBot extends Agent {
 	private Location nextLocation(Planet planet) {
 		List<Location> locations = planet.getAdjacentLocations(location);
 		locations = locations.stream().filter(loc -> !isFlaggedLocation(loc)).collect(Collectors.toList());
-		return locations.get(Planet.randomInt(0, locations.size()-1));
+		if(!locations.isEmpty()) {
+            return locations.get(Planet.randomInt(0, locations.size()-1));
+        }
+		return null;
 	}
 	
 }
