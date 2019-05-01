@@ -82,8 +82,11 @@ public class TransformerSim extends Simulator {
     		//bot isn't alive and sim needs to restart
     		if(bot.hasReachedAllSpark()) {
     			System.out.println("All Spark reached [" + bot.getPathSize() + "]");
-    			bot.optimisePath(planet);
     		}
+    		//only optimise when path size exceeds threshold or has reached the all spark
+    		if(bot.hasReachedAllSpark() || bot.getPathSize() > 100) {
+                bot.optimisePath(planet);
+            }
     		reset();
     	}
     	

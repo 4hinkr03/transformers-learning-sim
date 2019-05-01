@@ -124,13 +124,11 @@ public class AutoBot extends Agent {
 
     public void optimisePath(Planet planet) {
         System.out.println("Optimising Path [" + getPathSize() + "]");
-
         int currentIndex = 0;
         int nextIndex = 0;
         int difference = 1;
         for (Location location : path) {
             List<Location> neighbours = planet.getAdjacentLocations(location);
-
             for (Location nextLocation : path) {
                 for (Location neighbour : neighbours) {
                     if (nextLocation.matches(neighbour)) {
@@ -148,15 +146,17 @@ public class AutoBot extends Agent {
         }
 
         if (difference > 1) {
-            System.out.println("optimisation found");
             System.out.println("From [" + currentIndex + "] => [" + nextIndex + "]");
             for(int i = nextIndex - 1; i > currentIndex; i--) {
                 //System.out.println("Remove [" + i + "] from path");
                 path.remove(i);
             }
+            System.out.println("Optimised Path [" + getPathSize() + "]");
+        } else {
+            System.out.println("No Optimisations found. No changes made");
         }
 
-        System.out.println("Optimised Path [" + getPathSize() + "]");
+
     }
 	
 }
