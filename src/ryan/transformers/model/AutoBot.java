@@ -81,7 +81,11 @@ public class AutoBot extends Agent {
 		if (!alive) {
 			System.out.println("Path[" + path.size() + "] before death " + path.get(path.size() - 1));
 			flagLocation(location);
-			path.remove(location);
+			//remove all location at and above current location in path - prevent jumping
+            int locationIndex = path.indexOf(location);
+            for(int i = path.size() - 1; i >= locationIndex; i--) {
+                path.remove(i);
+            }
 		}
 	}
 	
