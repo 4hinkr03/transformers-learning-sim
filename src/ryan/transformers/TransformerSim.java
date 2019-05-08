@@ -65,7 +65,7 @@ public class TransformerSim extends Simulator {
         //handle iterations for autobot learning
     	if (!bot.hasReachedAllSpark() && bot.isAlive()) {
     	    if(step == 0) {
-                System.out.println("starting path size=" + bot.getPathSize());
+               // System.out.println("starting path size=" + bot.getPathSize());
             }
             bot.act(planet, step);
     		
@@ -85,12 +85,20 @@ public class TransformerSim extends Simulator {
     		}
     		//only optimise when path size exceeds threshold or has reached the all spark
     		if(bot.hasReachedAllSpark() || bot.getPathSize() > 100) {
-                bot.optimisePath(planet);
+                if(!bot.optimisePath(planet)) {
+                	//path is fully optimised, we can now smoothen the current path
+                	try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	bot.smoothPath(planet);
+                }
             }
     		reset();
     	}
 
-    	bot.smoothPath(planet);
     	
     	
     }

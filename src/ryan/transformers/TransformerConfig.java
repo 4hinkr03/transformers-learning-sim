@@ -56,6 +56,6 @@ public class TransformerConfig {
     }
 
     static {
-        Config.max_simulation_speed = 5;
+        Config.max_simulation_speed = 1;
     }
 }

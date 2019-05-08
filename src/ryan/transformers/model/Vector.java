@@ -24,8 +24,9 @@ public class Vector {
         return Math.abs(x) + Math.abs(y);
     }
 
+    // y is inverted due to where 0,0 is
     public static Vector delta(Vector v1, Vector v2) {
-        return new Vector(v2.x - v1.x, v2.y - v1.y);
+        return new Vector(v2.x - v1.x, (v2.y - v1.y) * -1);
     }
 
     public static Vector vector(Location location) {
@@ -36,4 +37,9 @@ public class Vector {
     public String toString() {
         return "[Vector= " + x + ", " + y  + "]";
     }
+    
+    public void inverse() {
+    	x *= -1;
+    	y *= -1;
+   	}
 }
