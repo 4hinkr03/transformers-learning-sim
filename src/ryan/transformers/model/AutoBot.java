@@ -166,12 +166,45 @@ public class AutoBot extends Agent {
     public void smoothPath(Planet planet) {
         System.out.println("Smoothing path + [" + getPathSize() + "]");
 
+        int grid = 5;
 
+        for (int i = 0; i < getPathSize() - grid; i+=grid) {
+            //every grid do something
+            Vector v = getLocationVector(i, i + grid);
+            System.out.println("vector=" + v);
+            System.out.println("vector D=" + v.distance());
+            double dist = getDistanceVector(i, i + grid);
+            System.out.println("distance=" + dist);
 
-
-
+        }
         System.out.println("Smoothed path + [" + getPathSize() + "]");
 
+    }
+
+    private double getDistanceVector(int start, int finish) {
+        double distance = 0;
+        for(int index = start; index < finish; index++) {
+            Location startLoc = path.get(index);
+            Location finishLoc = path.get(index + 1);
+            int deltax = finishLoc.getX() - startLoc.getX();
+            int deltay = finishLoc.getX() - startLoc.getX();
+
+            if(deltax != 0 && deltay != 0) {
+                distance += Math.hypot(deltax, deltay);
+            } else {
+                distance += deltax + deltay;
+            }
+        }
+        return distance;
+    }
+
+    private Vector getLocationVector(int start, int finish) {
+	    Vector vector = new Vector();
+        for(int index = start; index < finish; index++) {
+            Vector delta = Vector.delta(Vector.vector(path.get(index)), Vector.vector(path.get(index + 1)));
+            vector.add(delta);
+        }
+	    return vector;
     }
 
 	public void die(Planet planet) {

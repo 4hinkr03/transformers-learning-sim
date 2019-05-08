@@ -89,6 +89,8 @@ public class TransformerSim extends Simulator {
             }
     		reset();
     	}
+
+    	bot.smoothPath(planet);
     	
     	
     }
