@@ -28,7 +28,7 @@ public class AutoBot extends Agent {
 		this.path = new ArrayList<>();
 		this.pathFlags = new ArrayList<PathFlag>();
 		path.add(location);
-		resetStep();
+		this.step = 0;
 	}
 
 	/**
@@ -36,8 +36,8 @@ public class AutoBot extends Agent {
 	 *
 	 * @param planet - AutoBot environment
 	 */
-	public void act(Planet planet) {
-		int locationIndex = path.indexOf(location);
+	public void act(Planet planet, int step) {
+	    int locationIndex = path.indexOf(location);
 		if (locationIndex < path.size() - 1) {
 			//move normally
             move(planet, path.get(locationIndex + 1));
@@ -49,11 +49,12 @@ public class AutoBot extends Agent {
             } else {
                 //next location doesn't exist, flag this location
                 System.out.println("No potential neighbours, flagged current location");
-                setAlive(planet, false);
+                die(planet);
             }
 		}
-		step++;
-	}
+        this.step = step;
+
+    }
 	
 	private void move(Planet planet, Location nextLocation) {
 		if (isLocationFree(planet, nextLocation)) {
@@ -64,7 +65,7 @@ public class AutoBot extends Agent {
 			}
 			planet.setAgent(this, location);
 		} else {
-			setAlive(planet, false);
+			die(planet);
 		}
 	}
 
@@ -74,31 +75,11 @@ public class AutoBot extends Agent {
 	public boolean isAlive() {
 		return alive;
 	}
-
-	/**
-	 * @param alive the alive to set
-	 */
-	public void setAlive(Planet planet, boolean alive) {
-		if (this.alive != alive && !alive) {
-			System.out.println("Path[" + path.size() + "] before death " + path.get(path.size() - 1));
-			System.out.print("Path=");
-			path.forEach(System.out::print);
-			System.out.println();
-			flagLocation(planet, location);
-			//remove all location at and above current location in path - prevent jumping
-            int locationIndex = path.indexOf(location);
-			System.out.println("location=" + location + "|" + locationIndex);
-            for(int i = path.size() - 1; i >= locationIndex; i--) {
-				path.remove(i);
-			}
-		}
-		this.alive = alive;
-	}
 	
-	public void reset(Planet planet) {
+	public void reset() {
 		location = path.get(0);
-		setAlive(planet, true);
-		resetStep();
+		alive = true;
+		step = 0;
 		System.out.println("RESET");
 		System.out.println("--------------------------------------");
 	}
@@ -136,7 +117,10 @@ public class AutoBot extends Agent {
 		if(!locations.isEmpty()) {
             return locations.get(TransformerConfig.randomInt(null, 0, locations.size()-1));
         } else {
-			System.out.println("no neighbours.....");
+			//corner case when all neighbours have been flagged, so no move can de done. We can assume that
+            //the current location must also be avoided next iteration of the simulation
+            System.out.println("No neighbours available - must die");
+            die(planet);
 		}
 		return null;
 	}
@@ -171,7 +155,6 @@ public class AutoBot extends Agent {
         if (difference > 1) {
             System.out.println("From [" + currentIndex + "] => [" + nextIndex + "]");
             for(int i = nextIndex - 1; i > currentIndex; i--) {
-                //System.out.println("Remove [" + i + "] from path");
                 path.remove(i);
             }
             System.out.println("Optimised Path [" + getPathSize() + "]");
@@ -180,8 +163,32 @@ public class AutoBot extends Agent {
         }
     }
 
-	private void resetStep() {
-		this.step = 0;
-	}
+    public void smoothPath(Planet planet) {
+        System.out.println("Smoothing path + [" + getPathSize() + "]");
+
+
+
+
+
+        System.out.println("Smoothed path + [" + getPathSize() + "]");
+
+    }
+
+	public void die(Planet planet) {
+	    if(alive) {
+	        alive = false;
+            System.out.println("Path[" + path.size() + "] before death " + path.get(path.size() - 1));
+            System.out.print("Path=");
+            path.forEach(System.out::print);
+            System.out.println();
+            flagLocation(planet, location);
+            //remove all location at and above current location in path - prevent jumping
+            int locationIndex = path.indexOf(location);
+            System.out.println("location=" + location + "|" + locationIndex);
+            for(int i = path.size() - 1; i >= locationIndex; i--) {
+                path.remove(i);
+            }
+        }
+    }
 	
 }
