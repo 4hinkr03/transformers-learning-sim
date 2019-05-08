@@ -23,7 +23,7 @@ public class Decepticon extends Agent {
     private void attack(Planet planet, Location location) {
         AutoBot bot = (AutoBot) planet.getAgent(location);
         System.out.println("Attacked AutoBot");
-        bot.setAlive(false);
+        bot.setAlive(planet,false);
         move(planet, location);
     }
 

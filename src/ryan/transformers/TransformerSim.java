@@ -52,7 +52,7 @@ public class TransformerSim extends Simulator {
     	planet.clear();
         planet.clearWorld();
         TransformerConfig.resetRandom();
-        bot.reset();
+        bot.reset(planet);
         step = 0;
         decepticons.forEach(decepticon -> planet.setAgent(null, decepticon.getLocation()));
         decepticons.clear();
@@ -67,7 +67,7 @@ public class TransformerSim extends Simulator {
     	    if(step == 1) {
                 System.out.println("starting path size=" + bot.getPathSize());
             }
-    		bot.act(planet);
+            bot.act(planet);
     		
     		//decepticons act
         	decepticons.forEach(decepticon -> decepticon.act(planet));
