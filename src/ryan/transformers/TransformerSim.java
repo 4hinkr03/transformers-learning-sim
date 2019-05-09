@@ -92,6 +92,7 @@ public class TransformerSim extends Simulator {
                 	} else {
                 		System.out.println("No smoothing found, no changes made.");
                 	}
+                } else {
                 }
             }
     		reset();
