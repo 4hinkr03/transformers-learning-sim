@@ -165,83 +165,89 @@ public class AutoBot extends Agent {
         }
     }
 
-    public void smoothPath(Planet planet) {
-        int grid = 5;
+    public boolean smoothPath(Planet planet) {
+    	//grids are the size of the vector to be checked for smoothing, small, medium and large
+        int[] grids = {3, 5, 10};
         System.out.println("Smoothing path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
-        for(int i = 0; i < getPathSize() - grid; i++) {
-            //every grid do something
-        	Vector v = getLocationVector(i, i + grid);
-            //System.out.println("vector=" + v);
-            //System.out.println("vector D=" + v.distance());
-            double dist = getDistanceBetween(i, i + grid);
-            //System.out.println("distance=" + dist);
-            if(v.distance() < dist) {
-            	//smooth locations out.....
-            	//remove bad locations backwards from path
-            	
-            	//System.out.print("BEFORE Path=");
-                //path.forEach(System.out::print);
-                //System.out.println();
-            	
-            	//System.out.println("Removing Locations");
-            	for(int index = i + grid - 1; index > i; index--) {
-            		//System.out.print(index + ",");
-            		path.remove(index);
-            	}
-            	//System.out.println();
-            	
-            	if(Math.abs(v.x) > 1 || Math.abs(v.y) > 1) {
-            		//this means the start & finish locations are not next to each other, so the gap removed must be filled with the smoothed solution
-            		//add better locations - backwards to ensure they are in th eight order in the array
-                	//inverse vector so we can work from finish to start
-                	v.inverse();
-                	//System.out.println("inverse=" + v);
-                	Location currentLoc = path.get(i + 1);
-                	//remove start location because it will be added again once the vector smooothing is calculated
-                	path.remove(i);
-                	Location tempLocation = new Location(currentLoc.getX(), currentLoc.getY());
+        for(int gridIndex = 0; gridIndex < grids.length; gridIndex++) {
+        	int grid = grids[gridIndex];
+        	for(int i = 0; i < getPathSize() - grid; i++) {
+                //every grid do something
+            	Vector v = getLocationVector(i, i + grid);
+                //System.out.println("vector=" + v);
+                //System.out.println("vector D=" + v.distance());
+                double dist = getDistanceBetween(i, i + grid);
+                //System.out.println("distance=" + dist);
+                if(v.distance() < dist) {
+                	//smooth locations out.....
+                	//remove bad locations backwards from path
                 	
-                	//System.out.println("Adding smoothed Locations [X]");
-                	//System.out.println("current temp=" + tempLocation);
-                	for(int x = v.x; Math.abs(x) >= 1; ) {
-                		if(v.x >= 0) {
-                			tempLocation.setX(tempLocation.getX() + 1);
-                			x--;
-                		} else {
-                			tempLocation.setX(tempLocation.getX() - 1);
-                    		x++;
-                		}
-                		//System.out.println("vector location=" + tempLocation);
-                		path.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
+                	//System.out.print("BEFORE Path=");
+                    //path.forEach(System.out::print);
+                    //System.out.println();
+                	
+                	//System.out.println("Removing Locations");
+                	for(int index = i + grid - 1; index > i; index--) {
+                		//System.out.print(index + ",");
+                		path.remove(index);
+                	}
+                	//System.out.println();
+                	
+                	if(Math.abs(v.x) > 1 || Math.abs(v.y) > 1) {
+                		//this means the start & finish locations are not next to each other, so the gap removed must be filled with the smoothed solution
+                		//add better locations - backwards to ensure they are in th eight order in the array
+                    	//inverse vector so we can work from finish to start
+                    	v.inverse();
+                    	//System.out.println("inverse=" + v);
+                    	Location currentLoc = path.get(i + 1);
+                    	//remove start location because it will be added again once the vector smooothing is calculated
+                    	path.remove(i);
+                    	Location tempLocation = new Location(currentLoc.getX(), currentLoc.getY());
+                    	
+                    	//System.out.println("Adding smoothed Locations [X]");
+                    	//System.out.println("current temp=" + tempLocation);
+                    	for(int x = v.x; Math.abs(x) >= 1; ) {
+                    		if(v.x >= 0) {
+                    			tempLocation.setX(tempLocation.getX() + 1);
+                    			x--;
+                    		} else {
+                    			tempLocation.setX(tempLocation.getX() - 1);
+                        		x++;
+                    		}
+                    		//System.out.println("vector location=" + tempLocation);
+                    		path.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
+                    	}
+                    	
+                    	//System.out.println("Adding smoothed Locations [Y]");
+                    	//System.out.println("current temp=" + tempLocation);
+                    	for(int y = v.y; Math.abs(y) >= 1; ) {
+                    		
+                    		if(v.y >= 0) {
+                    			tempLocation.setY(tempLocation.getY() - 1);
+                    			y--;
+                    		} else {
+                    			tempLocation.setY(tempLocation.getY() + 1);
+                        		y++;
+                    		}
+                    		//System.out.println("vector location=" + tempLocation);
+                    		path.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
+                    	}
+                	} else {
+                		System.out.println("locations are adjacent, smoothing not needed. Removing locations inbetween only");
                 	}
                 	
-                	//System.out.println("Adding smoothed Locations [Y]");
-                	//System.out.println("current temp=" + tempLocation);
-                	for(int y = v.y; Math.abs(y) >= 1; ) {
-                		
-                		if(v.y >= 0) {
-                			tempLocation.setY(tempLocation.getY() - 1);
-                			y--;
-                		} else {
-                			tempLocation.setY(tempLocation.getY() + 1);
-                    		y++;
-                		}
-                		//System.out.println("vector location=" + tempLocation);
-                		path.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
-                	}
-            	} else {
-            		System.out.println("locations are adjacent, smoothing not needed. Removing locations inbetween only");
-            	}
-            	
-            	/*System.out.print("AFTER Path=");
-                path.forEach(System.out::print);
-                System.out.println();*/
-            	
-            	//we only want to do this once and see if there is an improvement and sure it doesn't get caught
-            	break;
-            }   
+                	/*System.out.print("AFTER Path=");
+                    path.forEach(System.out::print);
+                    System.out.println();*/
+                	
+                	//we only want to do this once and see if there is an improvement and sure it doesn't get caught
+                	System.out.println("Smoothed path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
+                	return true;
+                }   
+            }
+           
         }
-        System.out.println("Smoothed path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
+        return false;
         
     }
 

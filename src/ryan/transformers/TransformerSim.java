@@ -87,13 +87,11 @@ public class TransformerSim extends Simulator {
     		if(bot.hasReachedAllSpark() || bot.getPathSize() > 100) {
                 if(!bot.optimisePath(planet)) {
                 	//path is fully optimised, we can now smoothen the current path
-                	try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                	bot.smoothPath(planet);
+                	if(bot.smoothPath(planet)) {
+                		System.out.println("smoothing success");
+                	} else {
+                		System.out.println("No smoothing found, no changes made.");
+                	}
                 }
             }
     		reset();
