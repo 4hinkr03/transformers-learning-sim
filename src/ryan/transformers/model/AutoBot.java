@@ -64,17 +64,21 @@ public class AutoBot extends Agent {
     }
 	
 	private void move(Planet planet, Location nextLocation) {
+		
+		if(isLocationBlock(planet, nextLocation) ) {
+			if(!path.contains(nextLocation)) {
+				path.add(nextLocation);
+				location = nextLocation;
+				die(planet);
+			}
+		} else {
 			planet.setAgent(null, location);
 			location = nextLocation;
+			planet.setAgent(this, location);
 			if(!path.contains(location)) {
 				path.add(location);
 			}
-			planet.setAgent(this, location);
-			
-			if (!isLocationFree(planet, location)) {
-				die(planet);
-			}
-		
+		}
 	}
 
 	/**
@@ -92,15 +96,15 @@ public class AutoBot extends Agent {
 		//System.out.println("--------------------------------------");
 	}
 	
-	private boolean isLocationFree(Planet planet, Location location) {
-    	return !planet.locationMatches(location, Block.class);
+	private boolean isLocationBlock(Planet planet, Location location) {
+    	return planet.locationMatches(location, Block.class);
     }
 	
 	private void flagLocation(Planet planet, Location location) {
 		int locStep = path.indexOf(location);
     	if(!isFlaggedLocation(location, locStep)) {
     		//if location is block, set step to -1
-			locStep = isLocationFree(planet, location) ? locStep : -1;
+			locStep = isLocationBlock(planet, location) ? locStep : -1;
 			//System.out.println("step=" + locStep);
     		PathFlag flag = new PathFlag(location, locStep);
     		pathFlags.add(flag);
@@ -211,7 +215,7 @@ public class AutoBot extends Agent {
     public boolean smoothPath(Planet planet) {
     	//grids from min to max to smooth out issues, hopefully...
         int gridMin = 2;
-        int gridMax = 10;
+        int gridMax = path.size() / 2;
         int failed = 0;
         System.out.println("Smoothing path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
         for(int grid = gridMin; grid < gridMax; grid++) {
