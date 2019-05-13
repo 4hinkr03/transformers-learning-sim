@@ -64,16 +64,17 @@ public class AutoBot extends Agent {
     }
 	
 	private void move(Planet planet, Location nextLocation) {
-		if (isLocationFree(planet, nextLocation)) {
 			planet.setAgent(null, location);
 			location = nextLocation;
 			if(!path.contains(location)) {
 				path.add(location);
 			}
 			planet.setAgent(this, location);
-		} else {
-			die(planet);
-		}
+			
+			if (!isLocationFree(planet, location)) {
+				die(planet);
+			}
+		
 	}
 
 	/**
@@ -210,7 +211,7 @@ public class AutoBot extends Agent {
     public boolean smoothPath(Planet planet) {
     	//grids from min to max to smooth out issues, hopefully...
         int gridMin = 2;
-        int gridMax = path.size() / 2;
+        int gridMax = 10;
         int failed = 0;
         System.out.println("Smoothing path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
         for(int grid = gridMin; grid < gridMax; grid++) {
@@ -221,6 +222,7 @@ public class AutoBot extends Agent {
                 //System.out.println("vector D=" + v.distance());
                 double dist = getDistanceBetween(i, i + grid);
                 //System.out.println("distance=" + dist);
+                //System.out.println("vector=" + v.distance() + ", hypot distance=" + dist);
                 if(v.distance() < dist) {
                 	//smooth locations out.....
                 	//remove bad locations backwards from path
