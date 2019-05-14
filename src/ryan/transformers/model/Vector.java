@@ -20,8 +20,16 @@ public class Vector {
         this.y += vector.y;
     }
 
-    public int distance() {
-        return Math.abs(x) + Math.abs(y);
+    public double distance() {
+    	int absX = Math.abs(x);
+    	int absY = Math.abs(y);
+    	
+    	if(absX > 0 && absY > 0) {
+    		//returns highest abs value
+    		return absX < absY ? absY : absX;
+    	} 
+    	return absX + absY;
+         
     }
 
     // y is inverted due to where 0,0 is

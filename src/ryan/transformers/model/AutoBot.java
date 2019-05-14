@@ -215,19 +215,24 @@ public class AutoBot extends Agent {
     public boolean smoothPath(Planet planet) {
     	//grids from min to max to smooth out issues, hopefully...
         int gridMin = 2;
-        int gridMax = path.size() / 2;
+        int gridMax = 10;
         int failed = 0;
         System.out.println("Smoothing path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
         for(int grid = gridMin; grid < gridMax; grid++) {
         	for(int i = 0; i < getPathSize() - grid; i++) {
                 //every grid do something
-            	Vector v = getLocationVector(i, i + grid);
+        		int iEnd = i + grid;
+        		Vector v = getLocationVector(i, iEnd);
                 //System.out.println("vector=" + v);
                 //System.out.println("vector D=" + v.distance());
-                double dist = getDistanceBetween(i, i + grid);
+                //double dist = getDistanceBetween(i, iEnd);
                 //System.out.println("distance=" + dist);
                 //System.out.println("vector=" + v.distance() + ", hypot distance=" + dist);
-                if(v.distance() < dist) {
+                double vectorDist = v.distance();
+                
+                double dist = iEnd - i;
+                
+                if(vectorDist < dist) {
                 	//smooth locations out.....
                 	//remove bad locations backwards from path
                 	
@@ -257,7 +262,40 @@ public class AutoBot extends Agent {
                     	
                     	//System.out.println("Adding smoothed Locations [X]");
                     	//System.out.println("current temp=" + tempLocation);
-                    	for(int x = v.x; Math.abs(x) >= 1; ) {
+                    	int absX = Math.abs(v.x);
+                    	int absY = Math.abs(v.y);
+                    	
+                    	if(absX > 0 || absY > 0) {
+                    		//we should be able to diagonally fill instead
+                    		
+                    		for(int x = v.x, y = v.y; Math.abs(x) > 0 || Math.abs(y) > 0; ) {
+                    			if(Math.abs(x) > 0) {
+                    				if(v.x >= 0 ) {
+	                        			tempLocation.setX(tempLocation.getX() + 1);
+	                        			x--;
+	                        		} else {
+	                        			tempLocation.setX(tempLocation.getX() - 1);
+	                            		x++;
+	                        		}
+                    			}
+                    			if(Math.abs(y) > 0) {
+                    				if(v.y >= 0) {
+                            			tempLocation.setY(tempLocation.getY() - 1);
+                            			y--;
+                            		} else {
+                            			tempLocation.setY(tempLocation.getY() + 1);
+                                		y++;
+                            		}
+                        			
+                    			}
+                    			Location tempLoc = new Location(tempLocation.getX(), tempLocation.getY());
+                        		tempPath.add(i, tempLoc);
+                    		}
+                    		
+                    	
+                    	}
+                    	
+                    	/*for(int x = v.x; Math.abs(x) >= 1; ) {
                     		if(v.x >= 0) {
                     			tempLocation.setX(tempLocation.getX() + 1);
                     			x--;
@@ -283,7 +321,7 @@ public class AutoBot extends Agent {
                     		//System.out.println("vector location=" + tempLocation);
                     		tempPath.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
                     	}
-                    	
+                    	*/
                     	//check temp path isn't flagged
                     	boolean smoothSuccess = true;
                     	for(int tempIndex = i; tempIndex < tempPath.size(); tempIndex++) {
