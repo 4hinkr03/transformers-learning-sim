@@ -262,15 +262,11 @@ public class AutoBot extends Agent {
                     	
                     	//System.out.println("Adding smoothed Locations [X]");
                     	//System.out.println("current temp=" + tempLocation);
-                    	int absX = Math.abs(v.x);
-                    	int absY = Math.abs(v.y);
-                    	
-                    	if(absX > 0 || absY > 0) {
+                    	if(v.x != 0 || v.y != 0) {
                     		//we should be able to diagonally fill instead
-                    		
                     		for(int x = v.x, y = v.y; Math.abs(x) > 0 || Math.abs(y) > 0; ) {
-                    			if(Math.abs(x) > 0) {
-                    				if(v.x >= 0 ) {
+                    			if(x != 0) {
+                    				if(v.x >= 0) {
 	                        			tempLocation.setX(tempLocation.getX() + 1);
 	                        			x--;
 	                        		} else {
@@ -278,7 +274,7 @@ public class AutoBot extends Agent {
 	                            		x++;
 	                        		}
                     			}
-                    			if(Math.abs(y) > 0) {
+                    			if(y != 0) {
                     				if(v.y >= 0) {
                             			tempLocation.setY(tempLocation.getY() - 1);
                             			y--;
@@ -295,33 +291,6 @@ public class AutoBot extends Agent {
                     	
                     	}
                     	
-                    	/*for(int x = v.x; Math.abs(x) >= 1; ) {
-                    		if(v.x >= 0) {
-                    			tempLocation.setX(tempLocation.getX() + 1);
-                    			x--;
-                    		} else {
-                    			tempLocation.setX(tempLocation.getX() - 1);
-                        		x++;
-                    		}
-                    		//System.out.println("vector location=" + tempLocation);
-                    		tempPath.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
-                    	}
-                    	
-                    	//System.out.println("Adding smoothed Locations [Y]");
-                    	//System.out.println("current temp=" + tempLocation);
-                    	for(int y = v.y; Math.abs(y) >= 1; ) {
-                    		
-                    		if(v.y >= 0) {
-                    			tempLocation.setY(tempLocation.getY() - 1);
-                    			y--;
-                    		} else {
-                    			tempLocation.setY(tempLocation.getY() + 1);
-                        		y++;
-                    		}
-                    		//System.out.println("vector location=" + tempLocation);
-                    		tempPath.add(i, new Location(tempLocation.getX(), tempLocation.getY()));
-                    	}
-                    	*/
                     	//check temp path isn't flagged
                     	boolean smoothSuccess = true;
                     	for(int tempIndex = i; tempIndex < tempPath.size(); tempIndex++) {
@@ -343,10 +312,6 @@ public class AutoBot extends Agent {
                     	}
                     	
                 	}
-                	
-                	/*System.out.print("AFTER Path=");
-                    path.forEach(System.out::print);
-                    System.out.println();*/
                 	
                 	//we only want to do this once and see if there is an improvement and sure it doesn't get caught
                 	System.out.println("Smoothed path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
