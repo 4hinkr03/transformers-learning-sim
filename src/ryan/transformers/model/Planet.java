@@ -17,99 +17,101 @@ import java.util.stream.Stream;
 
 public class Planet extends Environment {
 
-    private Agent[][] planet;
-    
-    public Planet() {
-    	clear();
-    }
+	private Agent[][] planet;
 
-    @Override
-    public void clear() {
-        planet = new Agent[getHeight()][getWidth()];
-    }
+	public Planet() {
+		clear();
+	}
 
-    @Override
-    public Agent getAgent(Location location) {
-        return planet[location.getY()][location.getX()];
-    }
+	@Override
+	public void clear() {
+		planet = new Agent[getHeight()][getWidth()];
+	}
 
-    @Override
-    public int getHeight() {
-        return Config.world_height;
-    }
+	@Override
+	public Agent getAgent(Location location) {
+		return planet[location.getY()][location.getX()];
+	}
 
-    @Override
-    public int getWidth() {
-        return Config.world_width;
-    }
+	@Override
+	public int getHeight() {
+		return Config.world_height;
+	}
 
-    @Override
-    public void setAgent(Agent agent, Location location) {
-        planet[location.getY()][location.getX()] = agent;
-    }
-    
-    public boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
-        Agent agent = getAgent(location);
-        return agent != null && agent.getClass() == matchClass;
-    }
+	@Override
+	public int getWidth() {
+		return Config.world_width;
+	}
 
-    public Optional<Location> getAdjacentLocationMatches(Location location, Class<? extends Agent> matchClass) {
-        Stream<Location> stream = getAdjacentLocations(location).stream();
-        return stream.filter(loc -> locationMatches(loc, matchClass)).findAny();
-    }
+	@Override
+	public void setAgent(Agent agent, Location location) {
+		planet[location.getY()][location.getX()] = agent;
+	}
 
-    public Location getAdjacentLocation(Location location) {
-        return getAdjacentLocation(location, null);
-    }
-    
-    public Location getAdjacentLocation(Class agent, Location location, Class<? extends Agent> classIgnore) {
-    	 List<Location> locations = getAdjacentLocations(location);
-    	 if(classIgnore != null) {
-    		 locations = locations.stream().filter(loc -> !locationMatches(loc, classIgnore)).collect(Collectors.toList());
-    	 }
-         if(!locations.isEmpty()) {
-             return locations.get(TransformerConfig.randomInt(agent, 0, locations.size() - 1));
-         }
+	public boolean locationMatches(Location location, Class<? extends Agent> matchClass) {
+		Agent agent = getAgent(location);
+		return agent != null && agent.getClass() == matchClass;
+	}
 
-         return null;
-    }
+	public Optional<Location> getAdjacentLocationMatches(Location location, Class<? extends Agent> matchClass) {
+		Stream<Location> stream = getAdjacentLocations(location).stream();
+		return stream.filter(loc -> locationMatches(loc, matchClass)).findAny();
+	}
 
-    public Location getAdjacentLocation(Location location, Class<? extends Agent> classIgnore) {
-        return getAdjacentLocation(null, location, classIgnore);
-    }
+	public Location getAdjacentLocation(Location location) {
+		return getAdjacentLocation(location, null);
+	}
 
-    public void clearWorld() {
-        for(int x = 0; x < getWidth(); x++) {
-            for(int y = 0; y < getHeight(); y++) {
-                Location location = new Location(x, y);
-                if(getAgent(location) instanceof AutoBot) {
-                    setAgent(null, new Location(x, y));
-                }
-            }
-        }
-    }
+	public Location getAdjacentLocation(Class<? extends Agent> agent, Location location,
+			Class<? extends Agent> classIgnore) {
+		List<Location> locations = getAdjacentLocations(location);
+		if (classIgnore != null) {
+			locations = locations.stream().filter(loc -> !locationMatches(loc, classIgnore))
+					.collect(Collectors.toList());
+		}
+		if (!locations.isEmpty()) {
+			return locations.get(TransformerConfig.randomInt(agent, 0, locations.size() - 1));
+		}
 
-    private boolean withinBounds(int x, int y) {
-        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
-    }
+		return null;
+	}
 
-    public List<Location> getAdjacentLocations(Location location) {
-        List<Location> adjacentLocations = new ArrayList<>();
-        int currentX = location.getX();
-        int currentY = location.getY();
+	public Location getAdjacentLocation(Location location, Class<? extends Agent> classIgnore) {
+		return getAdjacentLocation(null, location, classIgnore);
+	}
 
-        for (int xOffset = -1; xOffset <= 1; xOffset++) {
-            for (int yOffset = -1; yOffset <= 1; yOffset++) {
-                int x = currentX + xOffset;
-                int y = currentY + yOffset;
-                Location adjacentLocation = new Location(x, y);
-                if (withinBounds(x, y)) {
-                    if (!location.matches(adjacentLocation)) {
-                    	adjacentLocations.add(adjacentLocation);
-                    }
-                }
-            }
-        }
-        return adjacentLocations;
-    }
+	public void clearWorld() {
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				Location location = new Location(x, y);
+				if (getAgent(location) instanceof AutoBot) {
+					setAgent(null, new Location(x, y));
+				}
+			}
+		}
+	}
+
+	private boolean withinBounds(int x, int y) {
+		return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+	}
+
+	public List<Location> getAdjacentLocations(Location location) {
+		List<Location> adjacentLocations = new ArrayList<>();
+		int currentX = location.getX();
+		int currentY = location.getY();
+
+		for (int xOffset = -1; xOffset <= 1; xOffset++) {
+			for (int yOffset = -1; yOffset <= 1; yOffset++) {
+				int x = currentX + xOffset;
+				int y = currentY + yOffset;
+				Location adjacentLocation = new Location(x, y);
+				if (withinBounds(x, y)) {
+					if (!location.matches(adjacentLocation)) {
+						adjacentLocations.add(adjacentLocation);
+					}
+				}
+			}
+		}
+		return adjacentLocations;
+	}
 }
