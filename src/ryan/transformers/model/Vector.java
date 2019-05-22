@@ -29,12 +29,12 @@ public class Vector {
     		return absX < absY ? absY : absX;
     	} 
     	return absX + absY;
-         
     }
+
 
     // y is inverted due to where 0,0 is
     public static Vector delta(Vector v1, Vector v2) {
-        return new Vector(v2.x - v1.x, (v2.y - v1.y) * -1);
+        return new Vector(v2.x - v1.x, (v2.y - v1.y)); //* -1);
     }
 
     public static Vector vector(Location location) {

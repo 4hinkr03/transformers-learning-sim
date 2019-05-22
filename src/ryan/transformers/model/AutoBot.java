@@ -92,8 +92,6 @@ public class AutoBot extends Agent {
 		location = path.get(0);
 		alive = true;
 		step = 0;
-		//System.out.println("RESET");
-		//System.out.println("--------------------------------------");
 	}
 	
 	private boolean isLocationBlock(Planet planet, Location location) {
@@ -105,13 +103,8 @@ public class AutoBot extends Agent {
     	if(!isFlaggedLocation(location, locStep)) {
     		//if location is block, set step to -1
 			locStep = isLocationBlock(planet, location) ? locStep : -1;
-			//System.out.println("step=" + locStep);
-    		PathFlag flag = new PathFlag(location, locStep);
+			PathFlag flag = new PathFlag(location, locStep);
     		pathFlags.add(flag);
-			//System.out.println("Path Flag=" + flag);
-    		//System.out.println("locations flagged[" + pathFlags.size() + "]");
-    	} else {
-			//System.out.println("Location already flagged=" + location + ", step=" + locStep);
 		}
     }
 	
@@ -204,24 +197,20 @@ public class AutoBot extends Agent {
 
     public boolean smoothPath(Planet planet) {
     	//grids from min to max to smooth out issues, hopefully...
-        int gridMin = 2;
+        int gridMin = 3;
         int gridMax = 10;
         int failed = 0;
         System.out.println("Smoothing path [distance=" + getDistanceBetween(0, getPathSize() - 1) + "]");
+        System.out.print("Path=");
+        path.forEach(System.out::print);
+        System.out.println();
         for(int grid = gridMin; grid < gridMax; grid++) {
         	for(int i = 0; i < getPathSize() - grid; i++) {
                 //every grid do something
         		int iEnd = i + grid;
         		Vector v = getLocationVector(i, iEnd);
-                //System.out.println("vector=" + v);
-                //System.out.println("vector D=" + v.distance());
-                //double dist = getDistanceBetween(i, iEnd);
-                //System.out.println("distance=" + dist);
-                //System.out.println("vector=" + v.distance() + ", hypot distance=" + dist);
                 double vectorDist = v.distance();
-                
                 double dist = iEnd - i;
-                
                 if(vectorDist < dist) {
                 	//smooth locations out.....
                 	if(Math.abs(v.x) > 1 || Math.abs(v.y) > 1) {
@@ -229,12 +218,14 @@ public class AutoBot extends Agent {
                         for(int index = i + grid - 1; index > i; index--) {
                     		tempPath.remove(index);
                     	}
-                		//this means the start & finish locations are not next to each other, so the gap removed must be filled with the smoothed solution
+                		//this means the start & finish locations are not next to each other,
+                        //so the gap removed must be filled with the smoothed solution
                 		//add better locations - backwards to ensure they are in th eight order in the array
                     	//inverse vector so we can work from finish to start
                     	v.inverse();
                     	Location currentLoc = tempPath.get(i + 1);
-                    	//remove start location because it will be added again once the vector smooothing is calculated
+                    	//remove start location because it will be added again once the vector
+                        // smooothing is calculated
                     	tempPath.remove(i);
                     	Location tempLocation = new Location(currentLoc.getX(), currentLoc.getY());
                     	
@@ -252,10 +243,10 @@ public class AutoBot extends Agent {
                     			}
                     			if(y != 0) {
                     				if(v.y >= 0) {
-                            			tempLocation.setY(tempLocation.getY() - 1);
+                            			tempLocation.setY(tempLocation.getY() + 1);
                             			y--;
                             		} else {
-                            			tempLocation.setY(tempLocation.getY() + 1);
+                            			tempLocation.setY(tempLocation.getY() - 1);
                                 		y++;
                             		}
                         			
@@ -263,10 +254,7 @@ public class AutoBot extends Agent {
                     			Location tempLoc = new Location(tempLocation.getX(), tempLocation.getY());
                         		tempPath.add(i, tempLoc);
                     		}
-                    		
-                    	
                     	}
-                    	
                     	//check temp path isn't flagged
                     	boolean smoothSuccess = true;
                     	for(int tempIndex = i; tempIndex < tempPath.size(); tempIndex++) {
@@ -283,6 +271,7 @@ public class AutoBot extends Agent {
                         	previousPath.addAll(path);
                         	
                     		System.out.println("Smooth success");
+                            System.out.println("Grid size= " + grid);
                     		path.clear();
                     		path.addAll(tempPath);
                     	}
