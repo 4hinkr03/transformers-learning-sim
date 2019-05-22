@@ -5,7 +5,7 @@ import prins.simulator.model.Location;
 
 public class Block extends Agent {
 
-	public Block(Location location) {
-		super(location);
-	}
+    public Block(Location location) {
+        super(location);
+    }
 }
